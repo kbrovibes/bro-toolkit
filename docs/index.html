@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bro-toolkit v0.1.0 — Overview</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { interpolate-size: allow-keywords; }
+
+html.theme-dark {
+  --bg: #0B0B0F; --surface: #15151B; --surface-hover: #1C1C24;
+  --border: rgba(255,255,255,0.06);
+  --text: #E8E8EC; --text-secondary: #8A8A95;
+  --accent: #818cf8; --accent-secondary: #c4b5fd;
+  --positive: #34d399; --negative: #fb7185; --warning: #fbbf24;
+  --code-bg: #0F0F13; --code-text: #d1d5db;
+  --hairline: rgba(255,255,255,0.05);
+}
+html.theme-light {
+  --bg: #FAFAF9; --surface: #FFFFFF; --surface-hover: #F4F4F2;
+  --border: rgba(15,23,42,0.08);
+  --text: #0F172A; --text-secondary: #64748B;
+  --accent: #4F46E5; --accent-secondary: #7C3AED;
+  --positive: #059669; --negative: #DC2626; --warning: #D97706;
+  --code-bg: #F1F1EF; --code-text: #1F2937;
+  --hairline: rgba(15,23,42,0.06);
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: var(--bg); color: var(--text);
+  line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.011em;
+  transition: background 0.3s, color 0.3s;
+  scrollbar-gutter: stable;
+}
+h1,h2,h3,h4,h5,h6 { color: var(--text); letter-spacing: -0.028em; line-height: 1.1; text-wrap: balance; }
+h1 { font-weight: 700; font-size: clamp(2.5rem, 5vw, 3.5rem); }
+h2 { font-weight: 600; font-size: clamp(1.75rem, 3.5vw, 2.25rem); letter-spacing: -0.024em; }
+h3 { font-weight: 600; font-size: clamp(1.15rem, 2vw, 1.35rem); letter-spacing: -0.018em; }
+p, li, td, th, span, label { color: var(--text); font-weight: 400; }
+.text-secondary { color: var(--text-secondary); }
+code, pre, .mono { font-family: ui-monospace, 'SF Mono', Menlo, Monaco, 'Cascadia Code', Consolas, monospace; font-size: 0.875em; }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 48px 32px; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card:hover { box-shadow: 0 0 0 1px var(--border), 0 8px 24px rgba(15,23,42,0.04); }
+
+.eyebrow {
+  display: inline-block;
+  font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--accent);
+  padding: 4px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.kbd {
+  display: inline-block;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--code-bg); color: var(--code-text);
+  border: 1px solid var(--border);
+}
+
+/* ===== HERO ===== */
+.hero {
+  padding: 80px 32px 56px;
+  border-bottom: 1px solid var(--hairline);
+  background: var(--bg);
+}
+.hero-inner { max-width: 1100px; margin: 0 auto; }
+.hero h1 { margin: 18px 0 18px; max-width: 920px; }
+.hero .tagline {
+  font-size: clamp(1.05rem, 1.6vw, 1.18rem);
+  color: var(--text-secondary);
+  max-width: 720px;
+  line-height: 1.55;
+}
+.hero-meta {
+  display: flex; flex-wrap: wrap; gap: 14px;
+  margin-top: 28px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.hero-meta > span {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--positive); }
+
+/* ===== SECTIONS ===== */
+section {
+  padding: 72px 32px;
+  border-bottom: 1px solid var(--hairline);
+}
+section .inner { max-width: 1100px; margin: 0 auto; }
+section .lede {
+  color: var(--text-secondary); font-size: 1rem;
+  max-width: 720px; margin-top: 10px;
+}
+section header { margin-bottom: 36px; }
+
+/* ===== GRID ===== */
+.grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.grid-2 { display: grid; gap: 20px; grid-template-columns: repeat(2, 1fr); }
+.grid-3 { display: grid; gap: 20px; grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 768px) {
+  .grid, .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 16px; }
+  section, .hero { padding-left: 20px; padding-right: 20px; }
+  .container { padding: 32px 20px; }
+}
+
+/* ===== PILLARS ===== */
+.pillar h3 { margin-bottom: 10px; }
+.pillar .num {
+  font-family: ui-monospace, monospace;
+  font-size: 12px; font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+}
+.pillar p { color: var(--text-secondary); font-size: 0.95rem; }
+
+/* ===== ARCHITECTURE ===== */
+.arch {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 36px;
+}
+.arch-flow {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 18px 24px;
+  align-items: center;
+}
+.arch-side-label {
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 6px;
+}
+.arch-row {
+  display: contents;
+}
+.arch-cell {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-family: ui-monospace, monospace;
+  font-size: 13px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.arch-cell .label {
+  font-family: inherit;
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600;
+  color: var(--text-secondary);
+}
+.arch-cell .path { color: var(--text); }
+.arch-arrow {
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+  font-family: ui-monospace, monospace;
+  font-size: 14px;
+}
+.arch-callout {
+  margin-top: 28px;
+  padding: 18px 20px;
+  background: var(--code-bg); color: var(--code-text);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  font-family: ui-monospace, monospace; font-size: 13px;
+  white-space: pre-wrap; overflow-x: auto;
+}
+.arch-callout .marker { color: var(--accent); font-weight: 600; }
+@media (max-width: 768px) {
+  .arch-flow { grid-template-columns: 1fr; }
+  .arch-arrow { justify-content: flex-start; }
+  .arch-side-label:nth-of-type(2) { display: none; }
+}
+
+/* ===== TABLES ===== */
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: var(--surface);
+  border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.tbl th, .tbl td {
+  text-align: left;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--hairline);
+  vertical-align: top;
+}
+.tbl th {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  background: var(--bg);
+}
+.tbl tr:last-child td { border-bottom: none; }
+.tbl td code { background: var(--code-bg); color: var(--code-text); padding: 2px 6px; border-radius: 5px; }
+.tbl .name { font-weight: 600; }
+.tbl-wrap { overflow-x: auto; border-radius: 12px; }
+
+/* ===== CLI LIST ===== */
+.cli-list { display: grid; gap: 10px; }
+.cli-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 18px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  align-items: baseline;
+}
+.cli-row .cmd { font-family: ui-monospace, monospace; font-weight: 600; color: var(--text); font-size: 13.5px; }
+.cli-row .desc { color: var(--text-secondary); font-size: 14px; }
+@media (max-width: 640px) {
+  .cli-row { grid-template-columns: 1fr; gap: 4px; }
+}
+
+/* ===== CODE BLOCK ===== */
+.code {
+  background: var(--code-bg); color: var(--code-text);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 18px 20px;
+  font-family: ui-monospace, monospace; font-size: 13px; line-height: 1.55;
+  white-space: pre; overflow-x: auto;
+}
+.code .c-marker { color: var(--accent); font-weight: 600; }
+.code .c-comment { color: var(--text-secondary); }
+.code .c-string { color: var(--positive); }
+
+/* ===== TESTS ===== */
+.tests-summary {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 16px;
+  padding: 18px 22px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--positive) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--positive) 25%, transparent);
+  margin-bottom: 22px;
+}
+.tests-summary .badge {
+  font-family: ui-monospace, monospace; font-weight: 700;
+  font-size: 13px; color: var(--positive);
+  padding: 4px 10px; border-radius: 6px;
+  background: color-mix(in srgb, var(--positive) 14%, transparent);
+}
+.tests-summary .label { color: var(--text); font-weight: 500; }
+.tests-list { list-style: none; display: grid; gap: 10px; }
+.tests-list li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  align-items: baseline;
+}
+.tests-list .check {
+  font-family: ui-monospace, monospace; font-size: 11.5px; font-weight: 700;
+  color: var(--positive);
+  padding: 3px 8px; border-radius: 5px;
+  background: color-mix(in srgb, var(--positive) 12%, transparent);
+}
+.tests-list .name { font-family: ui-monospace, monospace; font-size: 13.5px; }
+
+/* ===== DIR TREE ===== */
+.tree {
+  background: var(--code-bg); color: var(--code-text);
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 22px 26px;
+  font-family: ui-monospace, monospace; font-size: 13px; line-height: 1.7;
+  white-space: pre; overflow-x: auto;
+}
+.tree .dir { color: var(--accent); font-weight: 600; }
+.tree .com { color: var(--text-secondary); }
+
+/* ===== ROADMAP ===== */
+.roadmap { display: grid; gap: 16px; grid-template-columns: repeat(4, 1fr); }
+.roadmap .card { padding: 22px; }
+.roadmap .stage {
+  font-family: ui-monospace, monospace;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.roadmap .title { font-weight: 600; margin-bottom: 14px; font-size: 1.05rem; }
+.roadmap ul { list-style: none; display: grid; gap: 8px; }
+.roadmap li {
+  font-size: 13.5px;
+  color: var(--text);
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.5;
+}
+.roadmap li::before {
+  content: '';
+  position: absolute; left: 0; top: 0.65em;
+  width: 6px; height: 1.5px;
+  background: var(--text-secondary);
+}
+.roadmap .done { border-color: color-mix(in srgb, var(--positive) 30%, var(--border)); }
+.roadmap .done .stage { color: var(--positive); }
+.roadmap .done li::before { background: var(--positive); }
+@media (max-width: 900px) { .roadmap { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .roadmap { grid-template-columns: 1fr; } }
+
+/* ===== FOOTER ===== */
+footer {
+  padding: 40px 32px 80px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.animate { animation: fadeInUp 0.55s ease-out both; }
+.animate.delay-1 { animation-delay: 0.06s; }
+.animate.delay-2 { animation-delay: 0.12s; }
+.animate.delay-3 { animation-delay: 0.18s; }
+.animate.delay-4 { animation-delay: 0.24s; }
+
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* ===== PRINT ===== */
+@media print {
+  body { background: white !important; color: black !important; }
+  .viz-menu { display: none !important; }
+  .reveal, .animate { opacity: 1 !important; transform: none !important; animation: none !important; }
+  .card, .arch, .tbl, .tree, .code { break-inside: avoid; border: 1px solid #ddd; box-shadow: none; }
+  section { padding: 32px 24px; border-bottom: 1px solid #eee; }
+  * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}
+@page { margin: 0.75in; }
+
+@media (max-width: 375px) { body { overflow-x: hidden; } }
+
+/* ===== MENU ===== */
+.viz-menu { position: fixed; top: 16px; right: 16px; z-index: 9999; }
+.viz-menu-toggle {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(12px); transition: background 0.18s;
+}
+.viz-menu-toggle:hover { background: var(--surface-hover); }
+.viz-menu-dropdown {
+  position: absolute; top: 48px; right: 0; min-width: 180px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 6px;
+  opacity: 0; visibility: hidden; transform: translateY(-6px);
+  transition: all 0.18s; box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+}
+.viz-menu-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.viz-menu-dropdown button {
+  width: 100%; padding: 9px 12px; border: none; border-radius: 6px;
+  background: transparent; color: var(--text); font-size: 13.5px;
+  font-family: inherit; cursor: pointer; text-align: left;
+  transition: background 0.12s;
+}
+.viz-menu-dropdown button:hover { background: var(--surface-hover); }
+</style>
+</head>
+<body>
+
+<a href="#main-content" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Skip to content</a>
+
+<div class="viz-menu">
+  <button class="viz-menu-toggle" onclick="toggleMenu()" aria-label="Menu">
+    <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/>
+    </svg>
+  </button>
+  <div class="viz-menu-dropdown" id="vizMenuDropdown">
+    <button onclick="cycleTheme()"><span id="themeLabel">Light theme</span></button>
+    <button onclick="window.print()">Print / PDF</button>
+  </div>
+</div>
+
+<main id="main-content" role="main">
+
+  <!-- ===== HERO ===== -->
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="eyebrow animate">v0.1.0 &middot; pre-stable</span>
+      <h1 class="animate delay-1">bro-toolkit</h1>
+      <p class="tagline animate delay-2">
+        Personal portable Mac toolkit &mdash; Claude skills, ZSH/TMUX configs, and a
+        <span class="kbd">kbro</span> CLI &mdash; installable in one command and fully reversible.
+      </p>
+      <div class="hero-meta animate delay-3">
+        <span><span class="dot"></span> Smoke tests 5/5</span>
+        <span>macOS (Darwin)</span>
+        <span>Single-file uninstall path</span>
+        <span>Symlinked Claude skills</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== PILLARS ===== -->
+  <section>
+    <div class="inner">
+      <header>
+        <span class="eyebrow">Why this exists</span>
+        <h2 style="margin-top:14px;">Three principles. Nothing else.</h2>
+        <p class="lede">A new Mac is a clean Mac. The repo gets cloned, one command runs, every tool is back &mdash; and every change is reversible without archaeology.</p>
+      </header>
+      <div class="grid-3">
+        <article class="card pillar reveal">
+          <div class="num">01</div>
+          <h3>One-command install</h3>
+          <p><code>./install.sh</code> sets up the kbro CLI, ZSH integration, TMUX config, and Claude skills + preferences. <code>--dry-run</code> previews every change first.</p>
+        </article>
+        <article class="card pillar reveal">
+          <div class="num">02</div>
+          <h3>Idempotent re-runs</h3>
+          <p>Running the installer twice is a no-op. Marker blocks are compared by body content; symlinks are checked before refresh. Backups are stamped and de-duplicated.</p>
+        </article>
+        <article class="card pillar reveal">
+          <div class="num">03</div>
+          <h3>Safe uninstall</h3>
+          <p>Every touchpoint in <code>$HOME</code> lives inside a <code>BRO-TOOLKIT-MANAGED</code> block or a namespaced symlink. <code>./uninstall.sh</code> reverses all of them &mdash; nothing copied, nothing inlined.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ARCHITECTURE ===== -->
+  <section>
+    <div class="inner">
+      <header>
+        <span class="eyebrow">Architecture</span>
+        <h2 style="margin-top:14px;">Dotfiles point at the repo. The repo holds the logic.</h2>
+        <p class="lede">Each user file gets exactly one line inside a marker block. Real configuration stays inside the repo &mdash; so <code>git pull</code> updates everything with no re-install.</p>
+      </header>
+
+      <div class="arch reveal">
+        <div class="arch-flow">
+          <div class="arch-side-label">User home (one line each)</div>
+          <div></div>
+          <div class="arch-side-label">Repo (all real logic)</div>
+
+          <div class="arch-row">
+            <div class="arch-cell">
+              <span class="label">ZSH</span>
+              <span class="path">~/.zshrc</span>
+            </div>
+            <div class="arch-arrow">source &rarr;</div>
+            <div class="arch-cell">
+              <span class="label">Shell entrypoint</span>
+              <span class="path">rc/zsh/bro.zsh</span>
+            </div>
+          </div>
+
+          <div class="arch-row">
+            <div class="arch-cell">
+              <span class="label">TMUX</span>
+              <span class="path">~/.tmux.conf</span>
+            </div>
+            <div class="arch-arrow">source-file &rarr;</div>
+            <div class="arch-cell">
+              <span class="label">tmux config</span>
+              <span class="path">rc/tmux/bro.tmux.conf</span>
+            </div>
+          </div>
+
+          <div class="arch-row">
+            <div class="arch-cell">
+              <span class="label">Claude global</span>
+              <span class="path">~/.claude/CLAUDE.md</span>
+            </div>
+            <div class="arch-arrow">@-include &rarr;</div>
+            <div class="arch-cell">
+              <span class="label">Standing preferences</span>
+              <span class="path">claude/instructions/preferences.md</span>
+            </div>
+          </div>
+
+          <div class="arch-row">
+            <div class="arch-cell">
+              <span class="label">Claude skills</span>
+              <span class="path">~/.claude/skills/bro-*</span>
+            </div>
+            <div class="arch-arrow">symlink &rarr;</div>
+            <div class="arch-cell">
+              <span class="label">Skill sources</span>
+              <span class="path">claude/skills/bro-*/</span>
+            </div>
+          </div>
+
+          <div class="arch-row">
+            <div class="arch-cell">
+              <span class="label">CLI</span>
+              <span class="path">~/.local/bin/kbro</span>
+            </div>
+            <div class="arch-arrow">symlink &rarr;</div>
+            <div class="arch-cell">
+              <span class="label">Dispatcher</span>
+              <span class="path">bin/kbro</span>
+            </div>
+          </div>
+        </div>
+
+<div class="arch-callout"><span class="marker"># &gt;&gt;&gt; BRO-TOOLKIT-MANAGED &gt;&gt;&gt;</span>
+[ -f "$HOME/claude/bro-toolkit/rc/zsh/bro.zsh" ] && source "$HOME/claude/bro-toolkit/rc/zsh/bro.zsh"
+<span class="marker"># &lt;&lt;&lt; BRO-TOOLKIT-MANAGED &lt;&lt;&lt;</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== V1 COMPONENTS ===== -->
+  <section>
+    <div class="inner">
+      <header>
+        <span class="eyebrow">V1 components</span>
+        <h2 style="margin-top:14px;">What ships today</h2>
+        <p class="lede">Five components &mdash; each with a single, narrow touchpoint and a documented uninstall path.</p>
+      </header>
+      <div class="tbl-wrap reveal">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th style="width:18%;">Component</th>
+              <th style="width:25%;">Touchpoint</th>
+              <th style="width:32%;">Payload</th>
+              <th style="width:25%;">Uninstall reverses</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="name">kbro CLI</td>
+              <td><code>~/.local/bin/kbro</code></td>
+              <td>symlink &rarr; <code>bin/kbro</code></td>
+              <td>removes symlink if it still points to us</td>
+            </tr>
+            <tr>
+              <td class="name">ZSH integration</td>
+              <td><code>~/.zshrc</code></td>
+              <td>marker block sourcing <code>rc/zsh/bro.zsh</code> (exports <code>BRO_TOOLKIT_HOME</code>, adds <code>bin/</code> to PATH)</td>
+              <td>deletes the marker block, restores from timestamped backup</td>
+            </tr>
+            <tr>
+              <td class="name">TMUX config</td>
+              <td><code>~/.tmux.conf</code></td>
+              <td>marker block <code>source-file</code>'ing <code>rc/tmux/bro.tmux.conf</code> &mdash; Alt+arrow pane nav, dimmed inactive panes, pane border styling</td>
+              <td>deletes the marker block, restores backup</td>
+            </tr>
+            <tr>
+              <td class="name">Claude skill <code>pull</code></td>
+              <td><code>~/.claude/skills/pull</code></td>
+              <td>symlink &rarr; <code>claude/skills/pull/</code> &mdash; <code>/pull</code> runs <code>git pull --rebase --autostash</code> with conflict-safe checks</td>
+              <td>removes symlink if it points to us; never touches third-party skills</td>
+            </tr>
+            <tr>
+              <td class="name">Claude preferences</td>
+              <td><code>~/.claude/CLAUDE.md</code></td>
+              <td>marker block with <code>@</code>-include of <code>claude/instructions/preferences.md</code> &mdash; visualize defaults to light mode, Linear/Notion aesthetic, terse responses</td>
+              <td>deletes the marker block, restores backup</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== KBRO CLI ===== -->
+  <section>
+    <div class="inner">
+      <header>
+        <span class="eyebrow">CLI surface</span>
+        <h2 style="margin-top:14px;">The kbro dispatcher</h2>
+        <p class="lede">One binary, eight verbs. New tools land here so you never have to remember a second name.</p>
+      </header>
+      <div class="cli-list reveal">
+        <div class="cli-row"><span class="cmd">kbro help</span><span class="desc">Show usage and current paths.</span></div>
+        <div class="cli-row"><span class="cmd">kbro version</span><span class="desc">Print version from the <code>VERSION</code> file.</span></div>
+        <div class="cli-row"><span class="cmd">kbro status</span><span class="desc">Summarize each component's install state from <code>~/.bro-toolkit-state.json</code>.</span></div>
+        <div class="cli-row"><span class="cmd">kbro doctor</span><span class="desc">Detect drift: missing symlinks, stale marker blocks, non-executable scripts.</span></div>
+        <div class="cli-row"><span class="cmd">kbro install [comp]</span><span class="desc">Install all or one component. Accepts <code>--dry-run</code>.</span></div>
+        <div class="cli-row"><span class="cmd">kbro uninstall [comp]</span><span class="desc">Reverse all or one component. Accepts <code>--dry-run</code>.</span></div>
+        <div class="cli-row"><span class="cmd">kbro update</span><span class="desc"><code>git pull --rebase --autostash</code> in the repo, then re-run the installer.</span></div>
+        <div class="cli-row"><span class="cmd">kbro list</span><span class="desc">List bundled Claude skills (with descriptions) and PATH-exposed tools.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== IDEMPOTENCY ===== -->
+  <section>
+    <div class="inner">
+      <header>
+        <span class="eyebrow">Idempotency</span>
+        <h2 style="margin-top:14px;">Four lines that make this safe</h2>
+        <p class="lede">Re-running the installer hashes the marker-block body against what's expected. If it already matches, nothing changes. If it doesn't, the old block is removed and the new one appended.</p>
+      </header>
+      <div class="grid-2 reveal">
+        <div>
+<pre class="code"><span class="c-comment"># ~/.zshrc &mdash; the entire footprint we leave behind</span>
+
+<span class="c-marker"># &gt;&gt;&gt; BRO-TOOLKIT-MANAGED &gt;&gt;&gt;</span>
+[ -f <span class="c-string">"$HOME/claude/bro-toolkit/rc/zsh/bro.zsh"</span> ] \
+  &amp;&amp; source <span class="c-string">"$HOME/claude/bro-toolkit/rc/zsh/bro.zsh"</span>
+<span class="c-marker"># &lt;&lt;&lt; BRO-TOOLKIT-MANAGED &lt;&lt;&lt;</span>
+</pre>
+        </div>
+        <div>
+          <article class="card" style="height:100%;">
+            <h3 style="margin-bottom:14px;">Reversal recipe</h3>
+            <ol style="padding-left: 20px; display: grid; gap: 8px; font-size: 14px;">
+              <li>Backup the file once per uninstall run to <code>~/.bro-toolkit-backups/&lt;ts&gt;/</code>.</li>
+              <li>Strip every line from <code>BEGIN</code> through <code>END</code> using an <code>awk</code> filter.</li>
+              <li>Trim trailing blank lines so the file doesn't grow.</li>
+              <li>Record the change in <code>~/.bro-toolkit-state.json</code> so <code>kbro status</code> reflects it.</li>
+            </ol>
+            <p class="text-secondary" style="margin-top:14px; font-size: 13px;">Backups are kept after uninstall &mdash; you can audit or restore them by hand.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TESTS ===== -->
+  <section>
+    <div class="inner">
+      <header>
+        <span class="eyebrow">Verification</span>
+        <h2 style="margin-top:14px;">Smoke test &mdash; 5 of 5 passing</h2>
+        <p class="lede"><code>tests/smoke.sh</code> runs against a sandbox <code>$HOME</code> so it never touches the real one. Required to pass on every commit.</p>
+      </header>
+      <div class="tests-summary reveal">
+        <span class="badge">PASS</span>
+        <span class="label">5 / 5 checks</span>
+        <span class="text-secondary" style="font-size: 13px;">install &rarr; re-install &rarr; status &rarr; uninstall, in a temporary <code>$HOME</code></span>
+      </div>
+      <ul class="tests-list reveal">
+        <li><span class="check">PASS</span><span class="name">dry-run install is inert</span></li>
+        <li><span class="check">PASS</span><span class="name">install touches all expected files</span></li>
+        <li><span class="check">PASS</span><span class="name">re-install is idempotent (line count unchanged)</span></li>
+        <li><span class="check">PASS</span><span class="name">kbro status reports all four components installed</span></li>
+        <li><span class="check">PASS</span><span class="name">uninstall removes every touchpoint</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== DIR TREE ===== -->
+  <section>
+    <div class="inner">
+      <header>
+        <span class="eyebrow">Layout</span>
+        <h2 style="margin-top:14px;">Repository structure</h2>
+        <p class="lede">Each top-level directory has exactly one job. New components add files; they don't reorganize.</p>
+      </header>
+      <pre class="tree reveal">
+bro-toolkit/
+&boxv;
+&boxvr;&boxh;&boxh; <span class="dir">bin/</span>                          <span class="com"># PATH-exposed tools</span>
+&boxv;   &boxur;&boxh;&boxh; kbro                      <span class="com"># dispatcher CLI</span>
+&boxv;
+&boxvr;&boxh;&boxh; <span class="dir">rc/</span>                           <span class="com"># RC files sourced from user dotfiles</span>
+&boxv;   &boxvr;&boxh;&boxh; <span class="dir">zsh/</span>
+&boxv;   &boxv;   &boxvr;&boxh;&boxh; bro.zsh               <span class="com"># sourced by ~/.zshrc</span>
+&boxv;   &boxv;   &boxur;&boxh;&boxh; aliases.zsh
+&boxv;   &boxur;&boxh;&boxh; <span class="dir">tmux/</span>
+&boxv;       &boxur;&boxh;&boxh; bro.tmux.conf          <span class="com"># sourced by ~/.tmux.conf</span>
+&boxv;
+&boxvr;&boxh;&boxh; <span class="dir">claude/</span>                       <span class="com"># symlinked into ~/.claude/</span>
+&boxv;   &boxvr;&boxh;&boxh; <span class="dir">skills/pull/</span>
+&boxv;   &boxv;   &boxur;&boxh;&boxh; SKILL.md
+&boxv;   &boxur;&boxh;&boxh; <span class="dir">instructions/</span>
+&boxv;       &boxur;&boxh;&boxh; preferences.md         <span class="com"># @-included from ~/.claude/CLAUDE.md</span>
+&boxv;
+&boxvr;&boxh;&boxh; <span class="dir">scripts/</span>
+&boxv;   &boxvr;&boxh;&boxh; <span class="dir">lib/</span>                      <span class="com"># shared helpers</span>
+&boxv;   &boxv;   &boxvr;&boxh;&boxh; common.sh             <span class="com"># marker blocks, backups, logging</span>
+&boxv;   &boxv;   &boxur;&boxh;&boxh; state.sh              <span class="com"># JSON state read/write</span>
+&boxv;   &boxur;&boxh;&boxh; <span class="dir">installers/</span>               <span class="com"># one script per component</span>
+&boxv;       &boxvr;&boxh;&boxh; install_kbro.sh
+&boxv;       &boxvr;&boxh;&boxh; install_zsh.sh
+&boxv;       &boxvr;&boxh;&boxh; install_tmux.sh
+&boxv;       &boxur;&boxh;&boxh; install_claude.sh
+&boxv;
+&boxvr;&boxh;&boxh; <span class="dir">tests/</span>
+&boxv;   &boxur;&boxh;&boxh; smoke.sh                  <span class="com"># sandboxed install/uninstall cycle</span>
+&boxv;
+&boxvr;&boxh;&boxh; <span class="dir">docs/</span>
+&boxv;
+&boxvr;&boxh;&boxh; install.sh  uninstall.sh
+&boxur;&boxh;&boxh; README.md  BACKLOG.md  RELEASE_NOTES.md  VERSION  CLAUDE.md
+      </pre>
+    </div>
+  </section>
+
+  <!-- ===== ROADMAP ===== -->
+  <section>
+    <div class="inner">
+      <header>
+        <span class="eyebrow">Roadmap</span>
+        <h2 style="margin-top:14px;">From foundation to fleet</h2>
+        <p class="lede">V1 lays the contract. Everything after composes against it &mdash; no new touchpoints, no new install paths.</p>
+      </header>
+      <div class="roadmap reveal">
+        <article class="card done">
+          <div class="stage">V1 &middot; done</div>
+          <div class="title">Foundation</div>
+          <ul>
+            <li>Idempotent installer + uninstaller</li>
+            <li>kbro CLI with eight verbs</li>
+            <li>pull skill</li>
+            <li>Visualize=light-mode preferences</li>
+            <li>TMUX nav + dim config</li>
+            <li>Smoke test in sandbox</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="stage">V1.x &middot; near</div>
+          <div class="title">Surface area</div>
+          <ul>
+            <li>More skills (/groom-backlog, /security-review)</li>
+            <li>Brew formula for fresh-Mac bootstrap</li>
+            <li><code>kbro init &lt;project&gt;</code> templates</li>
+            <li>Per-machine config overrides</li>
+            <li><code>kbro update --check</code></li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="stage">V2 &middot; mid</div>
+          <div class="title">Reach</div>
+          <ul>
+            <li>claude-hud installer integration</li>
+            <li>Curated ZSH alias library</li>
+            <li>Linux support (drop Darwin guard)</li>
+            <li>CI runs smoke test on PRs</li>
+            <li>Self-update conflict handling</li>
+          </ul>
+        </article>
+        <article class="card">
+          <div class="stage">V3 &middot; long</div>
+          <div class="title">Polish</div>
+          <ul>
+            <li>Menubar status app</li>
+            <li>Encrypted secrets layer (sops / age)</li>
+            <li>TMUX plugin manager (tpm)</li>
+            <li>Per-host TMUX colorscheme</li>
+            <li><code>kbro share &lt;skill&gt;</code> upstreaming flow</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  bro-toolkit &middot; v0.1.0 &middot; pre-stable &middot; repo: <code>~/claude/bro-toolkit</code>
+</footer>
+
+<script>
+function toggleMenu() {
+  var d = document.getElementById('vizMenuDropdown');
+  if (d) d.classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.viz-menu')) {
+    var d = document.getElementById('vizMenuDropdown');
+    if (d) d.classList.remove('open');
+  }
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    var d = document.getElementById('vizMenuDropdown');
+    if (d) d.classList.remove('open');
+  }
+});
+
+var savedTheme = localStorage.getItem('viz-theme');
+var currentTheme = savedTheme || 'light';
+function applyTheme(t) {
+  document.documentElement.className = 'theme-' + t;
+  var label = document.getElementById('themeLabel');
+  if (label) label.textContent = (t === 'dark' ? 'Light theme' : 'Dark theme');
+  localStorage.setItem('viz-theme', t);
+  currentTheme = t;
+}
+function cycleTheme() { applyTheme(currentTheme === 'dark' ? 'light' : 'dark'); }
+applyTheme(currentTheme);
+
+document.querySelectorAll('.reveal').forEach(function(el) {});
+var revealObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.classList.add('visible'); revealObserver.unobserve(e.target); }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(function(el) { revealObserver.observe(el); });
+</script>
+
+</body>
+</html>

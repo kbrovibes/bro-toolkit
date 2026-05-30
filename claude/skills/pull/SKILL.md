@@ -1,9 +1,9 @@
 ---
-name: bro-pull
-description: Update the current git checkout safely. Runs `git pull --rebase --autostash` from the repo root, refusing to proceed if there are unresolved conflicts or detached HEAD. Use when the user says "pull", "/pull", "/bro-pull", "rebase from origin", or "update this repo".
+name: pull
+description: Update the current git checkout safely. Runs `git pull --rebase --autostash` from the repo root, refusing to proceed if there are unresolved conflicts or detached HEAD. Use when the user says "pull", "/pull", "rebase from origin", or "update this repo".
 ---
 
-# bro-pull
+# pull
 
 Bring the current git checkout up to date with its upstream — without losing local work or stomping a half-finished rebase.
 
@@ -11,7 +11,7 @@ Bring the current git checkout up to date with its upstream — without losing l
 
 Trigger this skill when the user asks to:
 
-- "pull", "/pull", "/bro-pull"
+- "pull", "/pull"
 - "rebase against main/origin"
 - "update this checkout"
 - "sync with upstream"

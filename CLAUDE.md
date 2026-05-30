@@ -28,7 +28,7 @@ This is **karthik's personal portable toolkit**. Anything you change here ships 
 
 ## Naming
 
-- Claude skills: prefix `bro-` (e.g., `bro-pull`) to avoid collisions with built-ins.
+- Claude skills: prefer the shortest natural name (e.g., `pull`, not `bro-pull`) — slash invocation should feel native. Reach for a `bro-` prefix only when a collision is likely or has already happened (e.g., `bro-status` if a global `status` skill exists).
 - Env vars: prefix `BRO_TOOLKIT_*`.
 - Marker tag: exactly `BRO-TOOLKIT-MANAGED`. Don't vary capitalization.
 

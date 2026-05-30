@@ -36,7 +36,7 @@ grep -qF "BRO-TOOLKIT-MANAGED" "$SANDBOX/.zshrc"     || fail "marker block missi
 grep -qF "BRO-TOOLKIT-MANAGED" "$SANDBOX/.tmux.conf" || fail "marker block missing in .tmux.conf"
 grep -qF "BRO-TOOLKIT-MANAGED" "$SANDBOX/.claude/CLAUDE.md" || fail "marker block missing in .claude/CLAUDE.md"
 [[ -L "$SANDBOX/.local/bin/kbro" ]]               || fail "kbro symlink missing"
-[[ -L "$SANDBOX/.claude/skills/bro-pull" ]]       || fail "bro-pull skill symlink missing"
+[[ -L "$SANDBOX/.claude/skills/pull" ]]           || fail "pull skill symlink missing"
 pass "install touched all expected files"
 
 # --- re-install must be idempotent ---
@@ -59,7 +59,7 @@ grep -qF "BRO-TOOLKIT-MANAGED" "$SANDBOX/.zshrc"     && fail "marker block still
 grep -qF "BRO-TOOLKIT-MANAGED" "$SANDBOX/.tmux.conf" && fail "marker block still in .tmux.conf after uninstall"
 grep -qF "BRO-TOOLKIT-MANAGED" "$SANDBOX/.claude/CLAUDE.md" && fail "marker block still in .claude/CLAUDE.md after uninstall"
 [[ ! -L "$SANDBOX/.local/bin/kbro" ]]               || fail "kbro symlink still present after uninstall"
-[[ ! -L "$SANDBOX/.claude/skills/bro-pull" ]]       || fail "bro-pull skill symlink still present"
+[[ ! -L "$SANDBOX/.claude/skills/pull" ]]         || fail "pull skill symlink still present"
 pass "uninstall removed every touchpoint"
 
 echo

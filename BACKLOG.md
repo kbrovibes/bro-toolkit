@@ -31,7 +31,7 @@ Items deliberately deferred from V1. Pull from the top when V1 is stable.
 - [x] Capture TMUX dim-inactive-pane config — **done in V1** (`rc/tmux/bro.tmux.conf`).
 - [x] Capture Alt+arrow pane navigation — **done in V1**.
 - [x] Capture visualize=light-mode preference — **done in V1** (`claude/instructions/preferences.md`).
-- [ ] `/pull` skill for git pull + rebase — **in V1 as `bro-pull`**.
+- [x] `/pull` skill for git pull + rebase — **done in V1**.
 - [ ] Claude HUD installer — backlog.
 - [ ] Audit prior Claude sessions for more candidate skills/preferences.
 

@@ -14,10 +14,15 @@ Reverse-chronological. Latest at top.
 - Idempotent marker-block model for `~/.zshrc`, `~/.tmux.conf`, `~/.claude/CLAUDE.md`.
 - State tracking at `~/.bro-toolkit-state.json`; backups at `~/.bro-toolkit-backups/<timestamp>/`.
 - **TMUX**: Alt+arrow pane navigation, dimmed inactive panes, pane border styling — ported from existing `~/.tmux.conf`.
-- **Claude skill `bro-pull`**: `/bro-pull` for git pull --rebase with conflict-safe checks.
+- **Claude skill `pull`**: `/pull` for git pull --rebase with conflict-safe checks.
 - **Claude preferences**: visualize defaults (light mode, sleek styling), wired into `~/.claude/CLAUDE.md` via `@`-include.
 - `tests/smoke.sh` — install → status → uninstall cycle.
 - Project-local `CLAUDE.md` enforcing release-notes / backlog hygiene on every commit.
+
+### Notes
+
+- Skill names default to the shortest natural form (e.g., `pull`, not `bro-pull`) so `/pull` works directly. Existing identically-named user skills are backed up before our symlink takes over.
+- `docs/index.html` is the GitHub Pages landing site, served from `main:/docs`.
 
 ### Known limitations
 

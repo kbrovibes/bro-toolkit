@@ -19,12 +19,14 @@ Just as important: **safe to uninstall**. Everything this toolkit adds to your `
 ## Install
 
 ```bash
-git clone <your-fork-url> ~/claude/bro-toolkit
+git clone https://github.com/kbrovibes/bro-toolkit.git ~/claude/bro-toolkit
 cd ~/claude/bro-toolkit
 ./install.sh                # install everything
 ./install.sh --dry-run      # preview without touching anything
 ./install.sh zsh tmux       # install only these components
 ```
+
+Project page: <https://kbrovibes.github.io/bro-toolkit/>
 
 After install, restart your shell (or `source ~/.zshrc`) and `tmux source ~/.tmux.conf`.
 
@@ -45,7 +47,7 @@ Originals are restored from `~/.bro-toolkit-backups/<timestamp>/`.
 | `kbro` CLI | Dispatcher: `kbro help / status / install / uninstall / doctor / update` | symlink at `~/.local/bin/kbro` |
 | ZSH config | Exports `BRO_TOOLKIT_HOME`, adds `bin/` to PATH, sources aliases | one `source` line in `~/.zshrc` |
 | TMUX config | Alt+arrow pane nav, dimmed inactive panes, pane border styling | one `source-file` line in `~/.tmux.conf` |
-| Claude skill `bro-pull` | `/bro-pull` — git pull --rebase with conflict-safe checks | symlink at `~/.claude/skills/bro-pull` |
+| Claude skill `pull` | `/pull` — git pull --rebase with conflict-safe checks | symlink at `~/.claude/skills/pull` |
 | Claude preferences | Visualize defaults (light mode, sleek styling) | one `@`-include in `~/.claude/CLAUDE.md` |
 
 ## The kbro CLI
@@ -87,7 +89,7 @@ bro-toolkit/
 │   ├── zsh/bro.zsh                # sourced by ~/.zshrc
 │   └── tmux/bro.tmux.conf         # sourced by ~/.tmux.conf
 ├── claude/
-│   ├── skills/bro-pull/           # /bro-pull skill
+│   ├── skills/pull/               # /pull skill
 │   └── instructions/preferences.md
 ├── scripts/
 │   ├── lib/{common,state}.sh      # shared helpers
