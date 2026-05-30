@@ -1,0 +1,18 @@
+# Local state and backups never leave the machine
+*.bak
+*.backup
+.DS_Store
+
+# Local override of state file (lives in $HOME, not repo, but guard anyway)
+.bro-toolkit-state.json
+.bro-toolkit-backups/
+
+# Editor cruft
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log

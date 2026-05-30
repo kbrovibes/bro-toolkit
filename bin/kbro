@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+# kbro — bro-toolkit dispatcher CLI
+#
+# Always resolves the repo root from its own symlink so it works whether
+# invoked via the symlink in ~/.local/bin/kbro or directly.
+set -euo pipefail
+
+# Resolve symlinks to find the real repo root.
+_self="${BASH_SOURCE[0]}"
+while [[ -L "$_self" ]]; do
+  _link="$(readlink "$_self")"
+  if [[ "$_link" != /* ]]; then
+    _self="$(cd "$(dirname "$_self")" && cd "$(dirname "$_link")" && pwd)/$(basename "$_link")"
+  else
+    _self="$_link"
+  fi
+done
+BRO_TOOLKIT_HOME="$(cd "$(dirname "$_self")/.." && pwd)"
+export BRO_TOOLKIT_HOME
+
+# shellcheck disable=SC1091
+source "$BRO_TOOLKIT_HOME/scripts/lib/common.sh"
+# shellcheck disable=SC1091
+source "$BRO_TOOLKIT_HOME/scripts/lib/state.sh"
+
+_VERSION="$(cat "$BRO_TOOLKIT_HOME/VERSION" 2>/dev/null | tr -d '[:space:]')"
+
+usage() {
+  cat <<EOF
+kbro — bro-toolkit dispatcher (v$_VERSION)
+
+USAGE
+  kbro <command> [args]
+
+COMMANDS
+  help                  Show this help
+  version               Show version
+  status                Show install status of each component
+  doctor                Diagnose drift (broken symlinks, stale marker blocks)
+  install [component]   Install all or one of: kbro zsh tmux claude
+  uninstall [component] Safely remove all or one component
+  update                git pull in repo, then re-run install
+  list                  List bundled Claude skills and tools
+
+EXAMPLES
+  kbro status
+  kbro install --dry-run
+  kbro install tmux
+  kbro uninstall
+
+ENV
+  BRO_TOOLKIT_HOME      $BRO_TOOLKIT_HOME
+  BRO_STATE_FILE        $BRO_STATE_FILE
+  BRO_BACKUP_ROOT       $BRO_BACKUP_ROOT
+EOF
+}
+
+cmd="${1:-help}"; shift || true
+
+case "$cmd" in
+  help|--help|-h)
+    usage ;;
+
+  version|--version|-V)
+    printf "kbro %s\n" "$_VERSION" ;;
+
+  status)
+    printf "bro-toolkit v%s\n" "$_VERSION"
+    printf "repo:  %s\n\n" "$BRO_TOOLKIT_HOME"
+    bro_state_summary ;;
+
+  doctor)
+    bro_log "checking repo integrity"
+    [[ -d "$BRO_TOOLKIT_HOME/scripts/installers" ]] && bro_ok "installers dir present" || bro_err "installers dir missing"
+    [[ -x "$BRO_TOOLKIT_HOME/bin/kbro" ]]            && bro_ok "kbro is executable"      || bro_warn "kbro is not executable"
+    [[ -f "$BRO_TOOLKIT_HOME/VERSION" ]]              && bro_ok "VERSION file present"    || bro_warn "VERSION file missing"
+
+    bro_log "checking touchpoints"
+    for f in "${ZDOTDIR:-$HOME}/.zshrc" "$HOME/.tmux.conf" "$HOME/.claude/CLAUDE.md"; do
+      if [[ -f "$f" ]] && grep -qF "$BRO_MARKER_BEGIN" "$f"; then
+        bro_ok "marker block present in $f"
+      else
+        bro_skip "no marker block in $f"
+      fi
+    done
+
+    bro_log "checking symlinks"
+    [[ -L "$HOME/.local/bin/kbro" ]] && bro_ok "kbro symlink ok" || bro_skip "kbro symlink absent"
+    for skill in "$BRO_TOOLKIT_HOME/claude/skills"/*/; do
+      [[ -d "$skill" ]] || continue
+      n="$(basename "$skill")"
+      if [[ -L "$HOME/.claude/skills/$n" ]]; then
+        bro_ok "skill symlink ok: $n"
+      else
+        bro_skip "skill symlink absent: $n"
+      fi
+    done
+    ;;
+
+  install)
+    exec "$BRO_TOOLKIT_HOME/install.sh" "$@" ;;
+
+  uninstall)
+    exec "$BRO_TOOLKIT_HOME/uninstall.sh" "$@" ;;
+
+  update)
+    bro_require_macos
+    bro_log "pulling latest in $BRO_TOOLKIT_HOME"
+    if ! (cd "$BRO_TOOLKIT_HOME" && git rev-parse --git-dir >/dev/null 2>&1); then
+      bro_err "$BRO_TOOLKIT_HOME is not a git repo — can't auto-update"
+      exit 1
+    fi
+    (cd "$BRO_TOOLKIT_HOME" && git pull --rebase --autostash)
+    bro_log "re-running installer"
+    exec "$BRO_TOOLKIT_HOME/install.sh" ;;
+
+  list)
+    printf "skills:\n"
+    if [[ -d "$BRO_TOOLKIT_HOME/claude/skills" ]]; then
+      for s in "$BRO_TOOLKIT_HOME/claude/skills"/*/; do
+        [[ -d "$s" ]] || continue
+        n="$(basename "$s")"
+        desc=""
+        if [[ -f "$s/SKILL.md" ]]; then
+          # Pull a one-line description from frontmatter or first non-empty line.
+          desc="$(awk '/^description:/{ sub(/^description: */,""); print; exit }' "$s/SKILL.md")"
+        fi
+        printf "  - %-20s %s\n" "$n" "$desc"
+      done
+    fi
+    printf "\ntools (PATH-exposed via ZSH):\n"
+    if [[ -d "$BRO_TOOLKIT_HOME/bin" ]]; then
+      for t in "$BRO_TOOLKIT_HOME/bin"/*; do
+        [[ -x "$t" && ! -d "$t" ]] || continue
+        printf "  - %s\n" "$(basename "$t")"
+      done
+    fi
+    ;;
+
+  *)
+    bro_err "unknown command: $cmd"
+    echo
+    usage
+    exit 2 ;;
+esac
