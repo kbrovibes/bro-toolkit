@@ -2,6 +2,12 @@
 
 Reverse-chronological. Latest at top.
 
+## 0.2.0 — 2026-08-19 — UBR watcher skill
+
+### Added
+
+- Claude skill `k1-ubr-check`: weekly UBR Thursday NWBA event watcher (portal scrape via Claude-in-Chrome, one-time formatted WhatsApp post to JSB, player tracking, `--dryrun` / `setup-cron` / `list-cron` / `stop-cron` knobs). README gains a runbook for recreating the session-only cron after a restart.
+
 ## 0.1.0 — 2026-05-30 — Foundation
 
 **Status: pre-stable.** Re-runnable installer, safe uninstall, but expect breaking changes until V1 is marked stable.

@@ -5,6 +5,7 @@ Items deliberately deferred from V1. Pull from the top when V1 is stable.
 ## Near-term (V1.x)
 
 - [ ] **More Claude skills**: `/groom-backlog`, `/security-review` aliases, `/visualize-light` shorthand.
+- [ ] **Restart-proof UBR watcher**: replace the session-only Claude cron behind `k1-ubr-check` with a launchd-driven headless runner so it survives reboots without manual `setup-cron`.
 - [ ] **Brew formula** so `brew install kbro` works on a fresh Mac before the repo is cloned.
 - [ ] **`kbro init <project>`** — bootstrap a project-local `CLAUDE.md` from a template.
 - [ ] **Per-machine config**: `~/.config/bro-toolkit/config.yaml` for machine-specific overrides (e.g., disable tmux fade on certain machines).
